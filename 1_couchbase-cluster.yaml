@@ -17,6 +17,7 @@ kind: CouchbaseCluster
 metadata:
   name: cb-example
 spec:
+  antiAffinity: true
   image: registry.connect.redhat.com/couchbase/server:6.6.2-1
   security:
     adminSecret: cb-example-auth
@@ -32,6 +33,17 @@ spec:
     - search
     - eventing
     - analytics
+    pod:
+      spec:
+        nodeSelector:
+        #  node-role.kubernetes.io/worker: ""
+        # Tolerations
+        tolerations:
+        - key: "node-role.kubernetes.io/worker"
+          operator: "Equal"
+          value: ""
+          effect: "NoSchedule"
+        containers:
   cluster:
     autoFailoverTimeout: 10s
 
